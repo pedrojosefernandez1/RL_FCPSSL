@@ -1,9 +1,9 @@
 # Título del Trabajo
 ## Información
-- **Alumnos:** Apellido1, Nombre1; Apellido2, Nombre2; ...
-- **Asignatura:** Nombre de la asignatura
+- **Alumnos:** Sendra Lázaro, Ricardo Javier; Pujante Saez, Jaime; Fernández Campillo, Pedro José;
+- **Asignatura:** Extensiones de Machine Learning
 - **Curso:** 2024/2025
-- **Grupo:** NombreGrupo
+- **Grupo:** FCPSSL
 ## Descripción
 [Breve descripción del trabajo y sus objetivos]
 ## Estructura
