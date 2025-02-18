@@ -5,7 +5,9 @@
 - **Curso:** 2024/2025
 - **Grupo:** FCPSSL
 ## Descripción
-[Breve descripción del trabajo y sus objetivos]
+En este parte se analizan los algoritmos del bandido de k-brazos, comparando su rendimiento en entornos
+estacionarios. Para ello se implementan varias familias de métodos: E-greedy, UCB, ascenso del gradiente,
+evaluando las recompensas y rechazos acumulados.
 ## Estructura
 [Explicación de la organización del repositorio]
 ## Instalación y Uso
