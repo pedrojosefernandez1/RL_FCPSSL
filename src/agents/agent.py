@@ -29,3 +29,8 @@ class Agent(ABC):
     def stats(self):
         """Devuelve estadísticas del entrenamiento"""
         pass
+    
+    @abstractmethod
+    def decay(self):
+        """Aplica decay a los parámetros relevantes""" 
+        pass
