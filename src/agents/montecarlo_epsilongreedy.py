@@ -9,7 +9,8 @@ class MonteCarloEpsilonGreedyAgent(MonteCarloAllAgent):
         self.epsilon = epsilon
         self.decay_rate = decay_rate
         self.min_epsilon = min_epsilon
-        
+        self.epsilon_episode = []
+
     def get_action(self, state) -> int:
         pi_A = np.ones(self.nA, dtype=float) * self.epsilon / self.nA
         best_action = np.argmax(self.Q[state])
@@ -17,7 +18,14 @@ class MonteCarloEpsilonGreedyAgent(MonteCarloAllAgent):
         return np.random.choice(np.arange(self.nA), p=pi_A)
     
     def decay(self):
+        self.epsilon_episode.append(self.epsilon)
         self.epsilon = max(self.min_epsilon, self.epsilon * self.decay_rate)
 
+    def stats(self):
+        """Devuelve estadísticas del entrenamiento"""
+        stats = super().stats()
+        stats["epsilon_episode"] = self.epsilon_episode
+        return stats
+    
     def __str__(self):
         return f'MonteCarloEpsilonGreedyAgent(gamma={self.gamma}, epsilon={self.epsilon}, decay_rate={self.decay_rate}, min_epsilon={self.min_epsilon})'

@@ -12,17 +12,25 @@ class MonteCarloAllAgent(Agent):
         self.Q = np.zeros([env.observation_space.n, self.nA])
         self.returns_counts = np.zeros([env.observation_space.n, self.nA])
         self.episode_rewards = []
+        self.episodes = []
     
-    def update(self, obs, action, next_obs, reward, terminated, truncated, info):
-        """Actualiza los valores de Q usando el método Monte Carlo"""
-        G = reward
-        self.returns_counts[obs,action] += 1
-        n = self.returns_counts[obs,action]
-        self.Q[obs,action] += (1/n) * (G - self.Q[obs, action])
+    def update(self, episode):
+        """Actualiza los valores de Q usando Monte Carlo de Todas las Visitas"""
+        G = 0  # Inicializamos el retorno acumulado
+
+        # Recorrer el episodio en orden inverso para calcular G
+        for t in reversed(range(len(episode))):
+            state, action, reward = episode[t]
+            G = reward + self.gamma * G  # Aplicar descuento
+
+            # Actualizar la tabla Q usando todas las visitas
+            self.returns_counts[state, action] += 1
+            n = self.returns_counts[state, action]
+            self.Q[state, action] += (1/n) * (G - self.Q[state, action])  # Promedio incremental
     
     def stats(self):
         """Devuelve estadísticas del entrenamiento"""
-        return {"Q-table": self.Q, "episode_rewards": self.episode_rewards}
+        return {"Q-table": self.Q, "episode_rewards": self.episode_rewards, "episodes": self.episodes}
     
     def train(self, num_episodes, render_interval=-1, video_path=None):
         """Entrena el agente usando Monte Carlo"""
@@ -39,23 +47,29 @@ class MonteCarloAllAgent(Agent):
         for t in tqdm(range(num_episodes)):
             state, _ = self.env.reset(seed=32)
             done = False
+            episode = []  # Guardaremos el historial de estado, acción, recompensa
             episode_reward = 0
-            episodes = []
+
             while not done:
                 action = self.get_action(state)
-                
                 next_state, reward, terminated, truncated, info = self.env.step(action)
-                episodes.append((state, action))
 
-                
+                episode.append((state, action, reward))  # Guardar cada transición
                 state = next_state
                 episode_reward += reward
                 done = terminated or truncated
-            for (state, action) in episodes:
-                self.update(state, action, next_state, episode_reward, terminated, truncated, info)   
 
+            # Actualizar Q-table con todas las visitas
             
-                
-            self.decay()
+            self.update(episode)  
+            self.decay()  # Decaimiento de epsilon si se usa epsilon-greedy
+
+
+            # Guardar recompensa total del episodio y el episodio junto al resto de episodios
             self.episode_rewards.append(episode_reward)
+            self.episodes.append(episode)
+
+
+
+
             

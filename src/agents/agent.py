@@ -21,6 +21,13 @@ class Agent(ABC):
     @abstractmethod
     def update(self, obs, action, next_obs, reward, terminated, truncated, info):
         """
+        Con la muestra (s, a, s', r) e información complementaria aplicamos el algoritmo paso a paso.
+        """
+        pass
+
+    @abstractmethod
+    def update(self, episode):
+        """
         Con la muestra (s, a, s', r) e información complementaria aplicamos el algoritmo.
         """
         pass
