@@ -17,7 +17,8 @@ from .agent import Agent
 from .montecarlo_all import MonteCarloAllAgent
 from .montecarlo_epsilongreedy import MonteCarloEpsilonGreedyAgent
 from .montecarlo_epsilonsoft import MonteCarloEpsilonSoftAgent
+from .sarsa import SarsaAgent
 
 # Lista de módulos o clases públicas
-__all__ = ['Agent', 'MonteCarloAllAgent', 'MonteCarloEpsilonGreedyAgent', 'MonteCarloEpsilonSoftAgent']
+__all__ = ['Agent', 'MonteCarloAllAgent', 'MonteCarloEpsilonGreedyAgent', 'MonteCarloEpsilonSoftAgent', 'SarsaAgent']
 

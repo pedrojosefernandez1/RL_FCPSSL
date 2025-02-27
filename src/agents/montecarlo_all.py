@@ -69,7 +69,16 @@ class MonteCarloAllAgent(Agent):
             self.episode_rewards.append(episode_reward)
             self.episodes.append(episode)
 
-
-
-
+    def pi_star(self):
+        done = False
+        pi_star = np.zeros([self.env.observation_space.n, self.env.action_space.n])
+        state, info = self.env.reset() # start in top-left, = 0
+        actions = []
+        while not done:
+            action = np.argmax(self.Q[state, :])
+            actions.insert(0,action)
+            pi_star[state,action] = 1
+            state, reward, terminated, truncated, info = self.env.step(action)
+            done = terminated or truncated
+        return pi_star, actions
             

@@ -41,3 +41,9 @@ class Agent(ABC):
     def decay(self):
         """Aplica decay a los parámetros relevantes""" 
         pass
+
+    @abstractmethod
+    def pi_star(self):
+        """Obtiene la política óptima a partir de lo que ha aprendido hasta el momento el agente"""
+        pass
+    
