@@ -33,7 +33,7 @@ class SarsaAgent(Agent):
         """Devuelve estadísticas del entrenamiento"""
         return {"Q-table": self.Q, "episode_rewards": self.episode_rewards, "episodes": self.episodes}
 
-    def train(self, num_episodes, render_interval=-1, video_path=None, alternate_decay=False):
+    def train(self, num_episodes, render_interval=-1, video_path=None):
         """Entrena el agente usando SARSA"""
         if video_path:
             env_name = self.env.spec.id if self.env.spec else "UnknownEnv"
@@ -43,10 +43,8 @@ class SarsaAgent(Agent):
             os.makedirs(model_dir, exist_ok=True)
             self.env = RecordVideo(self.env, model_dir, episode_trigger=lambda episode: episode % render_interval == 0)
 
-        found_reward = False
-
+        state, _ = self.env.reset(seed=self.seed)
         for t in tqdm(range(num_episodes)):
-            state, _ = self.env.reset(seed=32)
             action = self.get_action(state)  # Obtener acción inicial
             done = False
             episode_reward = 0
@@ -55,8 +53,6 @@ class SarsaAgent(Agent):
             while not done:
                 next_state, reward, terminated, truncated, info = self.env.step(action)
                 episode.append((state, action, reward))  # Guardar cada transición
-                if not found_reward and reward > 0:
-                    found_reward = True
 
                 next_action = self.get_action(next_state)  # Obtener siguiente acción (On-Policy)
 
@@ -67,17 +63,16 @@ class SarsaAgent(Agent):
                 done = terminated or truncated
 
             self.episode_rewards.append(episode_reward)
-            if found_reward and alternate_decay:
-                self.decay()  # Aplicar decay de epsilon
-            elif not alternate_decay:
-                self.decay()
+            self.decay()  # Aplicar decay de epsilon
 
             self.episodes.append(episode)
+            state, _ = self.env.reset()
+
 
 
     def pi_star(self):
         """Devuelve la política óptima estimada"""
-        state, _ = self.env.reset()  # Estado inicial
+        state, _ = self.env.reset(seed=self.seed)  # Estado inicial
         done = False
         pi_star = np.zeros([self.env.observation_space.n, self.env.action_space.n])
         actions = []
@@ -101,6 +96,20 @@ class SarsaAgent(Agent):
         actions.append(best_action)
     
     def pi_star3(self):
+        """Devuelve el camino óptimo aprendido por el agente, partiendo del estado inicial."""
+        state, _ = self.env.reset()  # Estado inicial
+        done = False
+        path = []  # Lista para almacenar (estado, acción) del camino óptimo
+
+        while not done:
+            action = np.argmax(self.Q[state, :])  # Elegir la mejor acción según Q(s,a)
+            path.append((state, action))  # Registrar el estado y la acción
+            state, reward, terminated, truncated, _ = self.env.step(action)
+            done = terminated or truncated  # Detener si se llega a un estado terminal
+
+        return path  # Devuelve la secuencia de (estado, acción) óptima
+    
+    def pi_star4(self):
         """Devuelve el camino óptimo aprendido por el agente, partiendo del estado inicial."""
         state, _ = self.env.reset()  # Estado inicial
         done = False

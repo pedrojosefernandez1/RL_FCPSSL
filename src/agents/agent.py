@@ -4,9 +4,10 @@ from abc import ABC, abstractmethod
 import gymnasium as gym
 
 class Agent(ABC):
-    def __init__(self, env: gym.Env, **hyperparameters):
+    def __init__(self, env: gym.Env, seed = 32, **hyperparameters):
         """Inicializa todo lo necesario para el aprendizaje"""
         self.env = env
+        self.seed = seed
         self.nA = env.action_space.n
         self.hyperparameters = hyperparameters
     

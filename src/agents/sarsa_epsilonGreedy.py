@@ -6,13 +6,16 @@ import os
 from gymnasium.wrappers import RecordVideo
 
 class SarsaEpsilonGreedyAgent(SarsaAgent):
-    def __init__(self, env: gym.Env, gamma=0.99, alpha=0.1, epsilon=1.0, epsilon_decay=0.995, min_epsilon=0.01):
+    def __init__(self, env: gym.Env, gamma=0.99, alpha=0.1, alpha_decay=0.995, min_alpha=0.01, epsilon=1.0, epsilon_decay=0.995, min_epsilon=0.01):
         """SARSA con política ε-greedy"""
         super().__init__(env, gamma=gamma, alpha=alpha)
         self.epsilon = epsilon  # Exploración inicial
         self.epsilon_decay = epsilon_decay  # Decaimiento de epsilon
         self.min_epsilon = min_epsilon  # Valor mínimo de epsilon
         self.epsilon_episode = []  # Historial de epsilon
+        self.alpha_decay = alpha_decay
+        self.min_alpha = min_alpha
+        self.alpha_episode = []
 
     def get_action(self, state) -> int:
         pi_A = np.ones(self.nA, dtype=float) * self.epsilon / self.nA
@@ -23,12 +26,15 @@ class SarsaEpsilonGreedyAgent(SarsaAgent):
     def decay(self):
         """Reduce epsilon gradualmente"""
         self.epsilon_episode.append(self.epsilon)
-        self.epsilon = max(self.epsilon * self.epsilon_decay, self.min_epsilon)
+        self.alpha_episode.append(self.epsilon)
+        self.epsilon = max(self.epsilon * self.epsilon_decay, self.min_epsilon)  # Decaimiento de epsilon
+        self.alpha = max(self.alpha * self.alpha_decay, self.min_alpha)  # Decaimiento de alpha
 
     def stats(self):
         """Devuelve estadísticas del entrenamiento, incluyendo la evolución de ε."""
         stats = super().stats()
         stats["epsilon_episode"] = self.epsilon_episode
+        stats["apha_episode"] = self.alpha_episode
         return stats
 
     def __str__(self):

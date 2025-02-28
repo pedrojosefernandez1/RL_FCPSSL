@@ -58,12 +58,12 @@ def plot_len_episodes(episodes):
   plt.grid(True)
   plt.show()
 
-def render_episode(actions_to_take, env, titulo="Camino encontrado"):
+def render_episode(actions_to_take, env, titulo="Camino encontrado", seed=32):
     done = False
-    env.reset()
+    env.reset(seed=seed)
     renders = []
     renders.append(env.render())
-    while not done or len(actions_to_take) > 0:
+    while not done and len(actions_to_take) > 0:
         action = actions_to_take.pop()
         next_state, reward, terminated, truncated, info = env.step(action)
         renders.append(env.render())

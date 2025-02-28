@@ -43,9 +43,9 @@ class MonteCarloAllAgent(Agent):
             
             # Envolver el entorno con el grabador de video 
             self.env = RecordVideo(self.env, model_dir, episode_trigger=lambda episode: episode % render_interval == 0)
-
+        
+        state, _ = self.env.reset(seed=self.seed)
         for t in tqdm(range(num_episodes)):
-            state, _ = self.env.reset(seed=32)
             done = False
             episode = []  # Guardaremos el historial de estado, acción, recompensa
             episode_reward = 0
@@ -68,6 +68,7 @@ class MonteCarloAllAgent(Agent):
             # Guardar recompensa total del episodio y el episodio junto al resto de episodios
             self.episode_rewards.append(episode_reward)
             self.episodes.append(episode)
+            state, _ = self.env.reset()
 
     def pi_star(self):
         done = False
