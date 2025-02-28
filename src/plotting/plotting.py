@@ -63,7 +63,7 @@ def render_episode(actions_to_take, env, titulo="Camino encontrado"):
     env.reset()
     renders = []
     renders.append(env.render())
-    while not done:
+    while not done or len(actions_to_take) > 0:
         action = actions_to_take.pop()
         next_state, reward, terminated, truncated, info = env.step(action)
         renders.append(env.render())

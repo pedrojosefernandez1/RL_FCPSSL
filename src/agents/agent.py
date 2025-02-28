@@ -47,3 +47,7 @@ class Agent(ABC):
         """Obtiene la política óptima a partir de lo que ha aprendido hasta el momento el agente"""
         pass
     
+    @abstractmethod
+    def __str__(self):
+        """Obtiene la política óptima a partir de lo que ha aprendido hasta el momento el agente"""
+        pass
