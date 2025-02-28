@@ -16,10 +16,10 @@ class SarsaAgent(Agent):
         self.episodes = []
 
 
-    def get_action(self, state) -> int:
+    def get_action(self, state, info) -> int:
         """Método abstracto: debe ser implementado en clases hijas"""
         raise NotImplementedError("El método get_action() debe ser implementado por una subclase.")
-
+    
     def decay(self):
         """Método abstracto para modificar parámetros como epsilon"""
         raise NotImplementedError("El método decay() debe ser implementado por una subclase.")
@@ -43,9 +43,9 @@ class SarsaAgent(Agent):
             os.makedirs(model_dir, exist_ok=True)
             self.env = RecordVideo(self.env, model_dir, episode_trigger=lambda episode: episode % render_interval == 0)
 
-        state, _ = self.env.reset(seed=self.seed)
+        state, info = self.env.reset(seed=self.seed)
         for t in tqdm(range(num_episodes)):
-            action = self.get_action(state)  # Obtener acción inicial
+            action = self.get_action(state, info)  # Obtener acción inicial
             done = False
             episode_reward = 0
             episode = []  # Guardaremos el historial de estado, acción, recompensa
@@ -54,7 +54,7 @@ class SarsaAgent(Agent):
                 next_state, reward, terminated, truncated, info = self.env.step(action)
                 episode.append((state, action, reward))  # Guardar cada transición
 
-                next_action = self.get_action(next_state)  # Obtener siguiente acción (On-Policy)
+                next_action = self.get_action(next_state, info)  # Obtener siguiente acción (On-Policy)
 
                 self.update(state, action, next_state, next_action, reward, terminated)
 
@@ -66,24 +66,30 @@ class SarsaAgent(Agent):
             self.decay()  # Aplicar decay de epsilon
 
             self.episodes.append(episode)
-            state, _ = self.env.reset()
+            state, info = self.env.reset()
 
 
 
     def pi_star(self):
         """Devuelve la política óptima estimada"""
-        state, _ = self.env.reset(seed=self.seed)  # Estado inicial
+        state, info = self.env.reset(seed=self.seed)  # Estado inicial
         done = False
         pi_star = np.zeros([self.env.observation_space.n, self.env.action_space.n])
         actions = []
         while not done:
-            best_action = np.argmax(self.Q[state])# Elegir la mejor acción según Q(s,a)
+            if 'action_mask' in info:
+                valid_actions = np.where(info['action_mask'])[0] 
+                best_action = valid_actions[np.argmax(self.Q[state, valid_actions])]   
+            
+            else:       
+                best_action = np.argmax(self.Q[state])# Elegir la mejor acción según Q(s,a)
             pi_star[state, best_action] += 1  # Marcar la mejor acción
             actions.insert(0,best_action)  # Registrar el estado y la acción
-            state, reward, terminated, truncated, _ = self.env.step(best_action)
+            state, reward, terminated, truncated, info = self.env.step(best_action)
             done = terminated or truncated  # Detener si se llega a un estado terminal
 
         return pi_star, actions
+
 
     def pi_star2(self):
         """Devuelve la política óptima estimada"""

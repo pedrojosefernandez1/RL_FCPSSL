@@ -44,14 +44,14 @@ class MonteCarloAllAgent(Agent):
             # Envolver el entorno con el grabador de video 
             self.env = RecordVideo(self.env, model_dir, episode_trigger=lambda episode: episode % render_interval == 0)
         
-        state, _ = self.env.reset(seed=self.seed)
+        state, info = self.env.reset(seed=self.seed)
         for t in tqdm(range(num_episodes)):
             done = False
             episode = []  # Guardaremos el historial de estado, acción, recompensa
             episode_reward = 0
 
             while not done:
-                action = self.get_action(state)
+                action = self.get_action(state, info)
                 next_state, reward, terminated, truncated, info = self.env.step(action)
 
                 episode.append((state, action, reward))  # Guardar cada transición
@@ -68,18 +68,24 @@ class MonteCarloAllAgent(Agent):
             # Guardar recompensa total del episodio y el episodio junto al resto de episodios
             self.episode_rewards.append(episode_reward)
             self.episodes.append(episode)
-            state, _ = self.env.reset()
+            state, info = self.env.reset()
 
     def pi_star(self):
         done = False
         pi_star = np.zeros([self.env.observation_space.n, self.env.action_space.n])
-        state, info = self.env.reset() # start in top-left, = 0
+        state, info = self.env.reset(seed=self.seed) # start in top-left, = 0
         actions = []
         while not done:
-            action = np.argmax(self.Q[state, :])
-            actions.insert(0,action)
-            pi_star[state,action] = 1
-            state, reward, terminated, truncated, info = self.env.step(action)
+            if 'action_mask' in info:
+                valid_actions = np.where(info['action_mask'])[0] 
+                best_action = valid_actions[np.argmax(self.Q[state, valid_actions])]   
+                
+            else:       
+                best_action = np.argmax(self.Q[state]) # Elegir la mejor acción según Q(s,a)
+            
+            actions.insert(0,best_action)
+            pi_star[state,best_action] = 1
+            state, reward, terminated, truncated, info = self.env.step(best_action)
             done = terminated or truncated
         return pi_star, actions
             

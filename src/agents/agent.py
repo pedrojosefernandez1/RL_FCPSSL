@@ -12,7 +12,7 @@ class Agent(ABC):
         self.hyperparameters = hyperparameters
     
     @abstractmethod
-    def get_action(self, state) -> int:
+    def get_action(self, state, info) -> int:
         """
         Indicará qué acción realizar de acuerdo al estado.
         Responde a la política del agente.

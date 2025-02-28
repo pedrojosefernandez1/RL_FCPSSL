@@ -17,12 +17,19 @@ class SarsaEpsilonGreedyAgent(SarsaAgent):
         self.min_alpha = min_alpha
         self.alpha_episode = []
 
-    def get_action(self, state) -> int:
-        pi_A = np.ones(self.nA, dtype=float) * self.epsilon / self.nA
-        best_action = np.argmax(self.Q[state])
+    def get_action(self, state, info) -> int:
+        if 'action_mask' in info:
+            pi_A = info['action_mask'] * self.epsilon / np.sum(info['action_mask'])
+            valid_actions = np.where(info['action_mask'])[0] 
+            best_action = valid_actions[np.argmax(self.Q[state, valid_actions])]
+            
+        else:
+            pi_A = np.ones(self.nA, dtype=float) * self.epsilon / self.nA
+            best_action = np.argmax(self.Q[state])
+            
         pi_A[best_action] += (1.0 - self.epsilon)
         return np.random.choice(np.arange(self.nA), p=pi_A)
-
+    
     def decay(self):
         """Reduce epsilon gradualmente"""
         self.epsilon_episode.append(self.epsilon)
