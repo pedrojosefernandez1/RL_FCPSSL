@@ -15,11 +15,10 @@ class SarsaEpsilonGreedyAgent(SarsaAgent):
         self.epsilon_episode = []  # Historial de epsilon
 
     def get_action(self, state) -> int:
-        """Selecciona una acción usando política ε-greedy."""
-        if np.random.rand() < self.epsilon:
-            return np.random.choice(self.nA)  # Exploración (acción aleatoria)
-        else:
-            return np.argmax(self.Q[state])  # Explotación (mejor acción conocida)
+        pi_A = np.ones(self.nA, dtype=float) * self.epsilon / self.nA
+        best_action = np.argmax(self.Q[state])
+        pi_A[best_action] += (1.0 - self.epsilon)
+        return np.random.choice(np.arange(self.nA), p=pi_A)
 
     def decay(self):
         """Reduce epsilon gradualmente"""

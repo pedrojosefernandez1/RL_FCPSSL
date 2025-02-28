@@ -33,7 +33,7 @@ class SarsaAgent(Agent):
         """Devuelve estadísticas del entrenamiento"""
         return {"Q-table": self.Q, "episode_rewards": self.episode_rewards, "episodes": self.episodes}
 
-    def train(self, num_episodes, render_interval=-1, video_path=None):
+    def train(self, num_episodes, render_interval=-1, video_path=None, alternate_decay=False):
         """Entrena el agente usando SARSA"""
         if video_path:
             env_name = self.env.spec.id if self.env.spec else "UnknownEnv"
@@ -43,6 +43,8 @@ class SarsaAgent(Agent):
             os.makedirs(model_dir, exist_ok=True)
             self.env = RecordVideo(self.env, model_dir, episode_trigger=lambda episode: episode % render_interval == 0)
 
+        found_reward = False
+
         for t in tqdm(range(num_episodes)):
             state, _ = self.env.reset(seed=32)
             action = self.get_action(state)  # Obtener acción inicial
@@ -50,10 +52,11 @@ class SarsaAgent(Agent):
             episode_reward = 0
             episode = []  # Guardaremos el historial de estado, acción, recompensa
 
-
             while not done:
                 next_state, reward, terminated, truncated, info = self.env.step(action)
                 episode.append((state, action, reward))  # Guardar cada transición
+                if not found_reward and reward > 0:
+                    found_reward = True
 
                 next_action = self.get_action(next_state)  # Obtener siguiente acción (On-Policy)
 
@@ -64,8 +67,11 @@ class SarsaAgent(Agent):
                 done = terminated or truncated
 
             self.episode_rewards.append(episode_reward)
-            if not truncated:
-                self.decay()  # Aplicar decaimiento de epsilon
+            if found_reward and alternate_decay:
+                self.decay()  # Aplicar decay de epsilon
+            elif not alternate_decay:
+                self.decay()
+
             self.episodes.append(episode)
 
 
