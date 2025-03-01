@@ -12,6 +12,9 @@ from tqdm import tqdm
 from abc import ABC, abstractmethod
 import gymnasium as gym
 
+import os
+from gymnasium.wrappers import RecordVideo
+
 class Agent(ABC):
     """
     Clase abstracta para agentes de aprendizaje por refuerzo.
@@ -96,3 +99,29 @@ class Agent(ABC):
         Devuelve una representación en cadena del agente.
         """
         pass
+    def setup_video_recording(self, render_interval=-1, video_path=None):
+        """
+        Configura la grabación de videos si se proporciona un directorio de almacenamiento.
+
+        Args:
+            render_interval (int, opcional): Frecuencia de grabación de episodios.
+            video_path (str, opcional): Directorio donde almacenar videos.
+        """
+        if video_path:
+            env_name = self.env.spec.id if self.env.spec else "UnknownEnv"
+            env_dir = os.path.join(video_path, env_name)
+            model_name = str(self).replace("=", "").replace(",", "").replace(" ", "_")
+            model_dir = os.path.join(env_dir, model_name)
+            os.makedirs(model_dir, exist_ok=True)
+            self.env = RecordVideo(self.env, model_dir, episode_trigger=lambda episode: episode % render_interval == 0)
+    
+    def train(self, num_episodes, render_interval=-1, video_path=None):
+        """
+        Configura la grabación de videos antes del entrenamiento.
+        
+        Args:
+            num_episodes (int): Número de episodios de entrenamiento.
+            render_interval (int, opcional): Frecuencia de grabación de episodios.
+            video_path (str, opcional): Directorio donde almacenar videos.
+        """
+        self.setup_video_recording(render_interval, video_path)
