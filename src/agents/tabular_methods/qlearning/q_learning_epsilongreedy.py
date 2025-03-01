@@ -23,6 +23,7 @@ class QLearningEpsilonGreedyAgent(EpsilonGreedyMixin, QLearningAgent):
         
         Args:
             env (gym.Env): Entorno de OpenAI Gym o Gymnasium.
+            seed (int, opcional): Semilla para la reproducibilidad. Por defecto 32.
             gamma (float): Factor de descuento.
             alpha (float): Tasa de aprendizaje inicial.
             epsilon (float): Probabilidad inicial de exploración.

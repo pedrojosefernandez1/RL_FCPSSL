@@ -21,6 +21,7 @@ class TDLearningAgent(TabularAgent):
 
         Args:
             env (gym.Env): Entorno de OpenAI Gym o Gymnasium.
+            seed (int, opcional): Semilla para la reproducibilidad. Por defecto 32.
             gamma (float): Factor de descuento.
             alpha (float): Tasa de aprendizaje inicial.
             alpha_decay (float): Factor de decaimiento de alpha.

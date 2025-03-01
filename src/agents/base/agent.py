@@ -31,6 +31,8 @@ class Agent(ABC):
             seed (int, opcional): Semilla para la reproducibilidad. Por defecto 32.
             **hyperparameters: Parámetros adicionales específicos del agente.
         """
+        env.reset(seed=seed)
+        np.random.seed(seed)
         self.env = env
         self.seed = seed
         self.nA = env.action_space.n

@@ -21,6 +21,7 @@ class EpisodicAgent(TabularAgent):
         
         Args:
             env (gym.Env): Entorno de OpenAI Gym o Gymnasium.
+            seed (int, opcional): Semilla para la reproducibilidad. Por defecto 32.
             gamma (float): Factor de descuento.
         """
         super().__init__(env,seed=seed, gamma=gamma)

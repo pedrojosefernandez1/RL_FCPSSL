@@ -1,43 +1,66 @@
-
+##### agents/tabular_methods/sarsa/sarsa.py #####
 """
-Módulo: SarsaEpsilonGreedyAgent
+Módulo: SarsaAgent
 ========================
-Este módulo implementa la clase `SarsaEpsilonGreedyAgent`, que extiende el algoritmo
-SARSA con una estrategia de exploración ε-greedy.
+Este módulo implementa la clase `SarsaAgent`, que emplea el algoritmo SARSA para
+la toma de decisiones en entornos de aprendizaje por refuerzo.
 """
 
 import numpy as np
-from agents.tabular_methods.sarsa.sarsa import SarsaAgent
-from agents.policies.epsilon_greedy_mixin import EpsilonGreedyMixin
+from agents.tabular_methods.td_learning_agent import TDLearningAgent
 import gymnasium as gym
+from tqdm import tqdm
 
-class SarsaEpsilonGreedyAgent(EpsilonGreedyMixin, SarsaAgent):
+class SarsaAgent(TDLearningAgent):
     """
-    Agente basado en SARSA con política ε-greedy.
-    Incorpora exploración reduciendo `epsilon` y `alpha` gradualmente a lo largo del entrenamiento.
+    Agente basado en el algoritmo SARSA.
+    Aprende de manera on-policy utilizando una política que se ajusta a medida
+    que aprende la función de valor de acción Q.
     """
 
-    def __init__(self, env: gym.Env, seed = 32, gamma=0.99, alpha=0.1, epsilon=1.0, 
-                 alpha_decay=0.995, min_alpha=0.01, epsilon_decay=0.995, min_epsilon=0.01):
+    def update(self, state, action, next_state, next_action, reward, done):
         """
-        Inicializa el agente SARSA con exploración ε-greedy.
+        Actualiza la tabla Q usando la ecuación de actualización de SARSA.
         
         Args:
-            env (gym.Env): Entorno de OpenAI Gym o Gymnasium.
-            gamma (float): Factor de descuento.
-            alpha (float): Tasa de aprendizaje inicial.
-            epsilon (float): Probabilidad inicial de exploración.
-            alpha_decay (float): Factor de decaimiento de alpha.
-            min_alpha (float): Valor mínimo de alpha.
-            epsilon_decay (float): Factor de decaimiento de epsilon.
-            min_epsilon (float): Valor mínimo de epsilon.
+            state: Estado actual.
+            action (int): Acción tomada.
+            next_state: Estado siguiente.
+            next_action (int): Próxima acción seleccionada.
+            reward (float): Recompensa obtenida.
+            done (bool): Indica si el episodio ha terminado.
         """
-        SarsaAgent.__init__(self, env,see=seed, gamma=gamma, alpha=alpha, alpha_decay=alpha_decay, min_alpha=min_alpha)
-        EpsilonGreedyMixin.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
-
-    def decay(self):
+        target = reward + self.gamma * self.Q[next_state, next_action] * (not done)
+        self.Q[state, action] += self.alpha * (target - self.Q[state, action])
+    
+    def train(self, num_episodes, render_interval=-1, video_path=None):
         """
-        Reduce `alpha` y `epsilon` llamando a los métodos correspondientes.
+        Entrena el agente SARSA. Configura la grabación de videos si es necesario.
+        
+        Args:
+            num_episodes (int): Número de episodios de entrenamiento.
+            render_interval (int, opcional): Frecuencia de grabación de episodios.
+            video_path (str, opcional): Directorio donde almacenar videos.
         """
-        super().decay()  # Reduce alpha (manejado por TDLearningAgent)
-        EpsilonGreedyMixin.decay(self)  # Reduce epsilon
+        super().train(num_episodes, render_interval, video_path)  # Configura video si es necesario
+        
+        state, info = self.env.reset()
+        action = self.get_action(state, info, self.Q, self.nA)
+        for episode in tqdm(range(num_episodes)):
+            done = False
+            episode_reward = 0
+            episode_data = []
+            while not done:
+                next_state, reward, terminated, truncated, info = self.env.step(action)
+                next_action = self.get_action(next_state, info, self.Q, self.nA)
+                self.update(state, action, next_state, next_action, reward, terminated)
+                episode_data.append((state, action, reward))
+                episode_reward += reward
+                state, action = next_state, next_action
+                done = terminated or truncated
+            
+            self.episode_rewards.append(episode_reward)  # Guarda recompensa acumulada
+            self.episodes.append(episode_data)  # Guarda historial del episodio
+            self.decay()  # Aplicar decay después de cada episodio
+            state, info = self.env.reset()
+            action = self.get_action(state, info, self.Q, self.nA)
