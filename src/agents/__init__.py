@@ -1,26 +1,24 @@
 """
-Module: agents/__init__.py
-Description: Contiene las importaciones y modulos/clases públicas del paquete arms.
-
-Author: Luis Daniel Hernández Molinero
-Email: ldaniel@um.es
-Date: 2025/01/29
-
-This software is licensed under the GNU General Public License v3.0 (GPL-3.0),
-with the additional restriction that it may not be used for commercial purposes.
-
-For more details about GPL-3.0: https://www.gnu.org/licenses/gpl-3.0.html
+Módulo: agents
+========================
+Este módulo agrupa todos los agentes disponibles dentro del paquete, organizándolos
+según su método de aprendizaje por refuerzo. Cada submódulo representa una categoría
+específica de algoritmos tabulares.
 """
+from .base.agent import Agent
+from .tabular_methods.montecarlo.montecarlo_all import MonteCarloAllAgent
+from .tabular_methods.montecarlo.montecarlo_epsilongreedy import MonteCarloEpsilonGreedyAgent
+from .tabular_methods.qlearning.q_learning import QLearningAgent
+from .tabular_methods.qlearning.q_learning_epsilongreedy import QLearningEpsilonGreedyAgent
+from .tabular_methods.sarsa.sarsa import SarsaAgent
+from .tabular_methods.sarsa.sarsa_epsilonGreedy import SarsaEpsilonGreedyAgent
 
-# Importación de módulos o clases
-from .agent import Agent
-from .montecarlo_all import MonteCarloAllAgent
-from .montecarlo_epsilongreedy import MonteCarloEpsilonGreedyAgent
-from .sarsa import SarsaAgent
-from .sarsa_epsilonGreedy import SarsaEpsilonGreedyAgent
-from .q_learning import QLearningAgent
-from .q_learning_epsilongreedy import QLearningEpsilonGreedyAgent
-
-# Lista de módulos o clases públicas
-__all__ = ['Agent', 'MonteCarloAllAgent', 'MonteCarloEpsilonGreedyAgent', 'SarsaAgent', 'SarsaEpsilonGreedyAgent', 'QLearningAgent', 'QLearningEpsilonGreedyAgent']
-
+__all__ = [
+    "Agent",
+    "MonteCarloAllAgent",
+    "MonteCarloEpsilonGreedyAgent",
+    "QLearningAgent",
+    "QLearningEpsilonGreedyAgent",
+    "SarsaAgent",
+    "SarsaEpsilonGreedyAgent",
+]
