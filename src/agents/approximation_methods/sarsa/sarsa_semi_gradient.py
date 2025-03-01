@@ -17,7 +17,7 @@ class SarsaSemiGradientAgent(ApproximationAgent):
     Utiliza funciones de aproximación en lugar de tablas Q discretas.
     """
 
-    def __init__(self, env: gym.Env,seed = 32, gamma=0.99, alpha=0.01, feature_extractor=None, seed=42):
+    def __init__(self, env: gym.Env, seed = 32, gamma=0.99, alpha=0.01, alpha_decay=0.995, min_alpha=0.01, feature_extractor=None):
         """
         Inicializa el agente SARSA Semi-Gradiente.
         
@@ -29,9 +29,9 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             feature_extractor (callable, opcional): Función de extracción de características.
             seed (int): Semilla para la reproducibilidad.
         """
-        super().__init__(env,seed=seed, gamma=gamma, alpha=alpha)
+        super().__init__(env, seed=seed, gamma=gamma, alpha=alpha, alpha_decay=alpha_decay, min_alpha=min_alpha)
         self.feature_extractor = feature_extractor or (lambda s: s)
-        self.weights = np.zeros(self.feature_extractor(env.observation_space.sample()).shape)
+        self.weights = np.zeros((self.nA, self.feature_extractor(env.observation_space.sample()).shape[0]))
 
     def get_action(self, state, info):
         """
@@ -53,8 +53,8 @@ class SarsaSemiGradientAgent(ApproximationAgent):
         """
         phi_s = self.feature_extractor(state)
         phi_next_s = self.feature_extractor(next_state)
-        target = reward + self.gamma * np.dot(self.weights, phi_next_s) * (not done)
-        prediction = np.dot(self.weights, phi_s)
+        target = reward + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done)
+        prediction = np.dot(self.weights[action], phi_s)
         self.weights += self.alpha * (target - prediction) * phi_s
     
     def decay(self):
@@ -94,3 +94,9 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             self.decay()  # Aplicar decay después de cada episodio
             state, info = self.env.reset()
             action = self.get_action(state, info)
+
+
+    def stats(self):
+        stats = super().stats()
+        stats = stats | {'weights': self.weights}
+        return stats

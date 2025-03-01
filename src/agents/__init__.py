@@ -12,7 +12,8 @@ from .tabular_methods.qlearning.q_learning import QLearningAgent
 from .tabular_methods.qlearning.q_learning_epsilongreedy import QLearningEpsilonGreedyAgent
 from .tabular_methods.sarsa.sarsa import SarsaAgent
 from .tabular_methods.sarsa.sarsa_epsilonGreedy import SarsaEpsilonGreedyAgent
-
+from .approximation_methods.sarsa.sarsa_semi_gradient import SarsaSemiGradientAgent
+from .approximation_methods.sarsa.sarsa_semi_gradient_epsilongreedy import SarsaSemiGradientEpsilonGreedyAgent
 __all__ = [
     "Agent",
     "MonteCarloAllAgent",
@@ -21,4 +22,6 @@ __all__ = [
     "QLearningEpsilonGreedyAgent",
     "SarsaAgent",
     "SarsaEpsilonGreedyAgent",
+    "SarsaSemiGradientAgent",
+    "SarsaSemiGradientEpsilonGreedyAgent"
 ]

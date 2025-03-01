@@ -75,6 +75,7 @@ class EpsilonGreedy:
         
         pi_A[best_action] += (1.0 - self.epsilon)
         return np.random.choice(np.arange(nA), p=pi_A)
+    
     def _get_approximation_action(self, state, Q_function, action_space):
         """
         Selecciona una acción usando una política ε-greedy en métodos de aproximación.

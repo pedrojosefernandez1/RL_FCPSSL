@@ -16,7 +16,7 @@ class ApproximationAgent(Agent):
     y la gestión de pesos o parámetros de modelos de aproximación.
     """
 
-    def __init__(self, env, gamma=0.99, alpha=0.01, alpha_decay=0.995, min_alpha=0.001):
+    def __init__(self, env, seed=32, gamma=0.99, alpha=0.01, alpha_decay=0.995, min_alpha=0.001):
         """
         Inicializa el agente con parámetros compartidos para métodos de aproximación.
         
@@ -27,11 +27,14 @@ class ApproximationAgent(Agent):
             alpha_decay (float): Factor de decaimiento de alpha.
             min_alpha (float): Valor mínimo de alpha.
         """
-        super().__init__(env, gamma=gamma)
+        super().__init__(env, seed=seed)
+        self.gamma = gamma
         self.alpha = alpha
         self.alpha_decay = alpha_decay
         self.min_alpha = min_alpha
-        self.alpha_history = []  # 🔹 Guarda la evolución de alpha
+        self.episode_rewards = []
+        self.episodes = []
+        self.alpha_history = []  # Guarda la evolución de alpha
 
     def decay(self):
         """
@@ -45,3 +48,10 @@ class ApproximationAgent(Agent):
         Método abstracto para actualizar los parámetros de la función de aproximación.
         """
         raise NotImplementedError("El método update() debe ser implementado en una subclase.")
+
+    def stats(self):
+        return {
+            "episode_rewards": self.episode_rewards,
+            "episodes": self.episodes,
+            'alpha_history': self.alpha_history
+        }
