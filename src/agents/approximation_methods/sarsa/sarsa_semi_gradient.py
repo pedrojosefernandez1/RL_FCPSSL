@@ -53,9 +53,9 @@ class SarsaSemiGradientAgent(ApproximationAgent):
         """
         phi_s = self.feature_extractor(state)
         phi_next_s = self.feature_extractor(next_state)
-        target = reward + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done)
+        target = reward + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done) #np.dot --> aproximacion lineal
         prediction = np.dot(self.weights[action], phi_s)
-        self.weights += self.alpha * (target - prediction) * phi_s
+        self.weights[action] += self.alpha * (target - prediction) * phi_s
     
     def decay(self):
         """
