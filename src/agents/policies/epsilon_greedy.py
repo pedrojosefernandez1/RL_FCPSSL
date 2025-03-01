@@ -1,15 +1,15 @@
-##### agents/policies/epsilon_greedy_mixin.py #####
+##### agents/policies/epsilon_greedy.py #####
 """
-Módulo: EpsilonGreedyMixin
+Módulo: EpsilonGreedy
 ========================
-Este módulo define la clase `EpsilonGreedyMixin`, que agrega la estrategia
+Este módulo define la clase `EpsilonGreedy`, que agrega la estrategia
 ε-greedy a cualquier agente que la necesite. También almacena el historial
 de valores de `epsilon` para su análisis.
 """
 
 import numpy as np
 
-class EpsilonGreedyMixin:
+class EpsilonGreedy:
     """
     Mixin para agregar comportamiento ε-greedy a cualquier agente.
     Maneja la selección de acciones y la reducción progresiva de `epsilon`.
@@ -91,3 +91,6 @@ class EpsilonGreedyMixin:
         """
         self.epsilon_history.append(self.epsilon)
         self.epsilon = max(self.epsilon * self.epsilon_decay, self.min_epsilon)
+
+    def stats(self):
+        return {'epsilon_history': self.epsilon_history}

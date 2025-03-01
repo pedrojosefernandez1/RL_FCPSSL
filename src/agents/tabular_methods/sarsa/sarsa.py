@@ -45,14 +45,14 @@ class SarsaAgent(TDLearningAgent):
         super().train(num_episodes, render_interval, video_path)  # Configura video si es necesario
         
         state, info = self.env.reset()
-        action = self.get_action(state, info, self.Q, self.nA)
+        action = self.get_action(state, info, Q=self.Q, action_space=self.nA)
         for episode in tqdm(range(num_episodes)):
             done = False
             episode_reward = 0
             episode_data = []
             while not done:
                 next_state, reward, terminated, truncated, info = self.env.step(action)
-                next_action = self.get_action(next_state, info, self.Q, self.nA)
+                next_action = self.get_action(next_state, info, Q=self.Q, action_space=self.nA)
                 self.update(state, action, next_state, next_action, reward, terminated)
                 episode_data.append((state, action, reward))
                 episode_reward += reward
@@ -63,4 +63,4 @@ class SarsaAgent(TDLearningAgent):
             self.episodes.append(episode_data)  # Guarda historial del episodio
             self.decay()  # Aplicar decay después de cada episodio
             state, info = self.env.reset()
-            action = self.get_action(state, info, self.Q, self.nA)
+            action = self.get_action(state, info, Q=self.Q, action_space=self.nA)

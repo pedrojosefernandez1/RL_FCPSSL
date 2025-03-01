@@ -15,7 +15,7 @@ class TDLearningAgent(TabularAgent):
     Maneja `alpha` y su evolución a lo largo del entrenamiento.
     """
 
-    def __init__(self, env, gamma=0.99, alpha=0.1, alpha_decay=0.995, min_alpha=0.01):
+    def __init__(self, env, seed=32, gamma=0.99, alpha=0.1, alpha_decay=0.995, min_alpha=0.01):
         """
         Inicializa un agente TD con una tasa de aprendizaje y su historial.
 
@@ -27,7 +27,7 @@ class TDLearningAgent(TabularAgent):
             alpha_decay (float): Factor de decaimiento de alpha.
             min_alpha (float): Valor mínimo de alpha.
         """
-        super().__init__(env, gamma=gamma)
+        super().__init__(env, seed=seed, gamma=gamma)
         self.alpha = alpha
         self.alpha_decay = alpha_decay
         self.min_alpha = min_alpha
@@ -39,3 +39,8 @@ class TDLearningAgent(TabularAgent):
         """
         self.alpha_history.append(self.alpha)  
         self.alpha = max(self.alpha * self.alpha_decay, self.min_alpha)
+
+    def stats(self):
+        stats = super().stats()
+        stats = stats | {'alpha_history': self.alpha_history}
+        return stats

@@ -8,10 +8,10 @@ utilizando funciones de aproximación en lugar de tablas de valores discretas.
 
 import numpy as np
 from agents.approximation_methods.sarsa.sarsa_semi_gradient import SarsaSemiGradientAgent
-from agents.policies.epsilon_greedy_mixin import EpsilonGreedyMixin
+from agents.policies.epsilon_greedy import EpsilonGreedy
 import gymnasium as gym
 
-class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedyMixin, SarsaSemiGradientAgent):
+class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedy, SarsaSemiGradientAgent):
     """
     Agente basado en SARSA Semi-Gradiente con política ε-greedy.
     """
@@ -33,7 +33,7 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedyMixin, SarsaSemiGradientA
         env.reset(seed=seed)
         np.random.seed(seed)
         SarsaSemiGradientAgent.__init__(self, env, gamma=gamma, alpha=alpha, feature_extractor=feature_extractor)
-        EpsilonGreedyMixin.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
+        EpsilonGreedy.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
         self.seed = seed
 
     def get_action(self, state, info):
@@ -47,4 +47,4 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedyMixin, SarsaSemiGradientA
         Reduce `alpha` y `epsilon` llamando a las funciones de decaimiento correspondientes.
         """
         super().decay()  # Reduce alpha
-        EpsilonGreedyMixin.decay(self)  # Reduce epsilon
+        EpsilonGreedy.decay(self)  # Reduce epsilon

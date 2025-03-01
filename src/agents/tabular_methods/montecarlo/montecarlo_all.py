@@ -9,6 +9,7 @@ Monte Carlo de todas las visitas para actualizar su política de decisión.
 import numpy as np
 from agents.tabular_methods.episodic_agent import EpisodicAgent
 import gymnasium as gym
+from tqdm import tqdm
 
 class MonteCarloAllAgent(EpisodicAgent):
     """
@@ -43,12 +44,12 @@ class MonteCarloAllAgent(EpisodicAgent):
         super().train(num_episodes, render_interval, video_path)  # Configura video si es necesario
         
         state, info = self.env.reset()
-        for episode in range(num_episodes):
+        for episode in tqdm(range(num_episodes)):
             done = False
             episode_reward = 0
             episode_data = []
             while not done:
-                action = self.get_action(state, info)
+                action = self.get_action(state, info, self.Q, action_space=self.nA)
                 next_state, reward, terminated, truncated, info = self.env.step(action)
                 episode_data.append((state, action, reward))
                 episode_reward += reward
@@ -58,5 +59,6 @@ class MonteCarloAllAgent(EpisodicAgent):
             self.update(episode_data)  
             self.episode_rewards.append(episode_reward)  # Guarda recompensa acumulada
             self.episodes.append(episode_data)  # Guarda historial del episodio
+            self.decay()
             state, info = self.env.reset()
-
+            

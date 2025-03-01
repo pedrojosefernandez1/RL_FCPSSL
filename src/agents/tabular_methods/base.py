@@ -53,6 +53,7 @@ class TabularAgent(Agent):
         return {
             "Q-table": self.Q,
             "episode_rewards": self.episode_rewards,
+            "episodes": self.episodes
         }
     
     @staticmethod
@@ -72,3 +73,26 @@ class TabularAgent(Agent):
             valid_actions = np.where(action_mask)[0]
             return valid_actions[np.argmax(Q[state, valid_actions])]
         return np.argmax(Q[state])
+
+    def pi_star(self):
+        """
+        Devuelve la política óptima basada en la tabla Q aprendida.
+        
+        Returns:
+            tuple: Matriz de política óptima y secuencia de acciones óptimas.
+        """
+        done = False
+        pi_star = np.zeros([self.env.observation_space.n, self.env.action_space.n])
+        state, info = self.env.reset(seed=self.seed)
+        actions = []
+        while not done:
+            if 'action_mask' in info:
+                valid_actions = np.where(info['action_mask'])[0]
+                best_action = valid_actions[np.argmax(self.Q[state, valid_actions])]
+            else:
+                best_action = np.argmax(self.Q[state])
+            actions.insert(0, best_action)
+            pi_star[state, best_action] = 1
+            state, reward, terminated, truncated, info = self.env.step(best_action)
+            done = terminated or truncated
+        return pi_star, actions

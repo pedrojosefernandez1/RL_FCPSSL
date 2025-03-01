@@ -8,10 +8,10 @@ SARSA con una estrategia de exploración ε-greedy.
 
 import numpy as np
 from agents.tabular_methods.sarsa.sarsa import SarsaAgent
-from agents.policies.epsilon_greedy_mixin import EpsilonGreedyMixin
+from agents.policies.epsilon_greedy import EpsilonGreedy
 import gymnasium as gym
 
-class SarsaEpsilonGreedyAgent(EpsilonGreedyMixin, SarsaAgent):
+class SarsaEpsilonGreedyAgent(EpsilonGreedy, SarsaAgent):
     """
     Agente basado en SARSA con política ε-greedy.
     Incorpora exploración reduciendo `epsilon` y `alpha` gradualmente a lo largo del entrenamiento.
@@ -33,11 +33,24 @@ class SarsaEpsilonGreedyAgent(EpsilonGreedyMixin, SarsaAgent):
             min_epsilon (float): Valor mínimo de epsilon.
         """
         SarsaAgent.__init__(self, env, gamma=gamma, alpha=alpha, alpha_decay=alpha_decay, min_alpha=min_alpha)
-        EpsilonGreedyMixin.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
+        EpsilonGreedy.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
 
     def decay(self):
         """
         Reduce `alpha` y `epsilon` llamando a los métodos correspondientes.
         """
-        super().decay()  # Reduce alpha (manejado por TDLearningAgent)
-        EpsilonGreedyMixin.decay(self)  # Reduce epsilon
+        SarsaAgent.decay(self)  # Reduce alpha (manejado por TDLearningAgent)
+        EpsilonGreedy.decay(self)  # Reduce epsilon
+
+    def stats(self):
+        stats = SarsaAgent.stats(self)
+        stats = stats | EpsilonGreedy.stats(self)
+        return stats
+
+    def __str__(self):
+        """
+        Devuelve una representación en cadena del agente con sus parámetros actuales.
+        """
+        return (f'SarsaEpsilonGreedyAgent(gamma={self.gamma}, alpha={self.alpha}, alpha_decay={self.alpha_decay}, '
+                f'min_alpha={self.min_alpha}, epsilon={self.epsilon}, epsilon_decay={self.epsilon_decay}, '
+                f'min_epsilon={self.min_epsilon})')

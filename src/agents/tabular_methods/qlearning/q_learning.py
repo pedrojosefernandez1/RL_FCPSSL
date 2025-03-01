@@ -54,13 +54,13 @@ class QLearningAgent(TDLearningAgent):
         """
         super().train(num_episodes, render_interval, video_path)  # Configura video si es necesario
         
-        state, info = self.env.reset(self.seed)
+        state, info = self.env.reset(seed=self.seed)
         for episode in tqdm(range(num_episodes)):
             done = False
             episode_reward = 0
             episode_data = []
             while not done:
-                action = self.get_action(state, info, self.Q, self.nA)
+                action = self.get_action(state, info, Q=self.Q, action_space=self.nA)
                 next_state, reward, terminated, truncated, info = self.env.step(action)
                 self.update(state, action, next_state, reward, terminated)
                 episode_data.append((state, action, reward))

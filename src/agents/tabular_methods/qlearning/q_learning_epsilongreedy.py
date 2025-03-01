@@ -7,10 +7,10 @@ el algoritmo Q-Learning con una estrategia de exploración ε-greedy.
 
 import numpy as np
 from agents.tabular_methods.qlearning.q_learning import QLearningAgent
-from agents.policies.epsilon_greedy_mixin import EpsilonGreedyMixin
+from agents.policies.epsilon_greedy import EpsilonGreedy
 import gymnasium as gym
 
-class QLearningEpsilonGreedyAgent(EpsilonGreedyMixin, QLearningAgent):
+class QLearningEpsilonGreedyAgent(EpsilonGreedy, QLearningAgent):
     """
     Agente basado en Q-Learning con política ε-greedy.
     Incorpora exploración reduciendo `epsilon` y `alpha` gradualmente a lo largo del entrenamiento.
@@ -33,11 +33,26 @@ class QLearningEpsilonGreedyAgent(EpsilonGreedyMixin, QLearningAgent):
             min_epsilon (float): Valor mínimo de epsilon.
         """
         QLearningAgent.__init__(self, env, seed=seed, gamma=gamma, alpha=alpha, alpha_decay=alpha_decay, min_alpha=min_alpha)
-        EpsilonGreedyMixin.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
+        EpsilonGreedy.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
 
     def decay(self):
         """
         Reduce `alpha` y `epsilon` llamando a los métodos correspondientes.
         """
-        super().decay()  # Reduce alpha (manejado por TDLearningAgent)
-        EpsilonGreedyMixin.decay(self)  # Reduce epsilon
+        QLearningAgent.decay(self)  # Reduce alpha (manejado por TDLearningAgent)
+        EpsilonGreedy.decay(self)  # Reduce epsilon
+
+    def stats(self):
+        stats = QLearningAgent.stats(self)
+        stats = stats | EpsilonGreedy.stats(self)
+        return stats
+
+    def __str__(self):
+        """
+        Devuelve una representación en cadena del agente con sus parámetros actuales.
+        """
+        return (f'QLearningEpsilonGreedyAgent(gamma={self.gamma}, alpha={self.alpha}, alpha_decay={self.alpha_decay}, '
+                f'min_alpha={self.min_alpha}, epsilon={self.epsilon}, epsilon_decay={self.epsilon_decay}, '
+                f'min_epsilon={self.min_epsilon})')
+
+    
