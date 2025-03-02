@@ -8,8 +8,10 @@ funciones de aproximación en lugar de tablas de valores discretas.
 
 import numpy as np
 from agents.approximation_methods.base import ApproximationAgent
+from agents.approximation_methods.tile import TileCodingFeatureExtractor
 import gymnasium as gym
 from tqdm import tqdm
+
 
 class SarsaSemiGradientAgent(ApproximationAgent):
     """
@@ -17,7 +19,7 @@ class SarsaSemiGradientAgent(ApproximationAgent):
     Utiliza funciones de aproximación en lugar de tablas Q discretas.
     """
 
-    def __init__(self, env: gym.Env, seed = 32, gamma=0.99, alpha=0.01, alpha_decay=0.995, min_alpha=0.01, feature_extractor=None):
+    def __init__(self, env: gym.Env, seed = 32, gamma=0.99, alpha=0.01, alpha_decay=0.995, min_alpha=0.01,  num_tilings=8, iht_size=4096,feature_extractor=None):
         """
         Inicializa el agente SARSA Semi-Gradiente.
         
@@ -30,8 +32,8 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             seed (int): Semilla para la reproducibilidad.
         """
         super().__init__(env, seed=seed, gamma=gamma, alpha=alpha, alpha_decay=alpha_decay, min_alpha=min_alpha)
-        self.feature_extractor = feature_extractor or (lambda s: s)
-        self.weights = np.zeros((self.nA, self.feature_extractor(env.observation_space.sample()).shape[0]))
+        self.feature_extractor = TileCodingFeatureExtractor(num_tilings=num_tilings, low=env.observation_space.low, high=env.observation_space.high, iht_size=iht_size)
+        self.weights = np.zeros((self.nA, iht_size))
 
     def get_action(self, state, info):
         """
@@ -51,11 +53,15 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             reward (float): Recompensa obtenida.
             done (bool): Indica si el episodio ha terminado.
         """
+
+
         phi_s = self.feature_extractor(state)
         phi_next_s = self.feature_extractor(next_state)
-        target = reward + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done) #np.dot --> aproximacion lineal
+        target = reward*phi_s + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done)
         prediction = np.dot(self.weights[action], phi_s)
-        self.weights[action] += self.alpha * (target - prediction) * phi_s
+        self.weights[action] += self.alpha * (target - prediction)
+
+ 
     
     def decay(self):
         """

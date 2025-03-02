@@ -1,16 +1,4 @@
-"""
-Módulo: QLearningAgent
-========================
-Este módulo implementa la clase `QLearningAgent`, que utiliza el algoritmo
-Q-Learning para la toma de decisiones en entornos de aprendizaje por refuerzo.
-"""
 
-import numpy as np
-from agents.tabular_methods.td_learning_agent import TDLearningAgent
-import gymnasium as gym
-from tqdm import tqdm
-
-##### agents/tabular_methods/qlearning/q_learning.py #####
 """
 Módulo: QLearningAgent
 ========================

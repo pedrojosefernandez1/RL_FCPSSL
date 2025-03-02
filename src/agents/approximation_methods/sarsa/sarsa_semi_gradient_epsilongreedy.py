@@ -37,8 +37,11 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedy, SarsaSemiGradientAgent)
         """
         Selecciona una acción usando la política ε-greedy con función de aproximación.
         """
-        return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.dot(self.weights, s), action_space=self.nA)
-    
+
+
+        return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([np.dot(self.weights[a], self.feature_extractor(s)) for a in range(self.nA)]), action_space=self.nA)
+        #return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.dot(self.weights, self.feature_extractor(s)), action_space=self.nA)
+
     def decay(self):
         """
         Reduce `alpha` y `epsilon` llamando a las funciones de decaimiento correspondientes.
@@ -57,7 +60,7 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedy, SarsaSemiGradientAgent)
         """
         return (f'SarsaSemiGradientEpsilonGreedyAgent(gamma={self.gamma}, alpha={self.alpha}, alpha_decay={self.alpha_decay}, '
                 f'min_alpha={self.min_alpha}, epsilon={self.epsilon}, epsilon_decay={self.epsilon_decay}, '
-                f'min_epsilon={self.min_epsilon}, feature_extractor={self.feature_extractor.__name__})')
+                f'min_epsilon={self.min_epsilon})')
 
     def pi_star(self):
         return super().pi_star()

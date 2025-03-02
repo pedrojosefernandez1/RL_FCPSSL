@@ -1,4 +1,4 @@
-##### agents/policies/epsilon_greedy.py #####
+
 """
 Módulo: EpsilonGreedy
 ========================
@@ -27,7 +27,7 @@ class EpsilonGreedy:
         self.epsilon = epsilon
         self.epsilon_decay = epsilon_decay
         self.min_epsilon = min_epsilon
-        self.epsilon_history = []  # 🔹 Guarda la evolución de epsilon
+        self.epsilon_history = []  
     def get_action(self, state, info, Q=None, Q_function=None, action_space=None):
         """
         Selecciona una acción usando una política ε-greedy, compatible con métodos tabulares y de aproximación.
