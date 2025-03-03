@@ -19,7 +19,7 @@ class SarsaSemiGradientAgent(ApproximationAgent):
     Utiliza funciones de aproximación en lugar de tablas Q discretas.
     """
 
-    def __init__(self, env: gym.Env, seed = 32, gamma=0.99, alpha=0.01, alpha_decay=0.995, min_alpha=0.01,  num_tilings=8, iht_size=4096,feature_extractor=None):
+    def __init__(self, env: gym.Env, seed = 32, gamma=0.99, alpha=0.01, alpha_decay=0.995, min_alpha=0.01,  num_tilings=16, iht_size=1024,feature_extractor=None):
         """
         Inicializa el agente SARSA Semi-Gradiente.
         
@@ -55,13 +55,19 @@ class SarsaSemiGradientAgent(ApproximationAgent):
         """
 
 
-        phi_s = self.feature_extractor(state)
-        phi_next_s = self.feature_extractor(next_state)
-        target = reward*phi_s + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done)
-        prediction = np.dot(self.weights[action], phi_s)
-        self.weights[action] += self.alpha * (target - prediction)
+        phi_s = self._normalize(self.feature_extractor(state))
+        phi_next_s = self._normalize(self.feature_extractor(next_state))
+        #target = reward + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done)
+        #prediction = np.dot(self.weights[action], phi_s)
+        #self.weights[action] += self.alpha * (target - prediction)
 
- 
+        td_error = (reward + self.gamma * np.dot(self.weights[next_action], phi_next_s) * (not done)) - np.dot(self.weights[action], phi_s)
+        self.weights[action] += self.alpha * td_error * phi_s  # Se multiplica por phi_s para aplicar el gradiente correcto
+
+
+    def _normalize(self, phi):
+        norm = np.linalg.norm(phi)
+        return phi / (norm + 1e-8)  # Evita división por cero
     
     def decay(self):
         """
@@ -100,6 +106,11 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             self.decay()  # Aplicar decay después de cada episodio
             state, info = self.env.reset()
             action = self.get_action(state, info)
+            if episode % 1000 == 0:
+                print(f"Episode {episode}, weight norm: {np.linalg.norm(self.weights)}")
+            max_weight_norm = 25  # Límite para la norma de los pesos
+            if np.linalg.norm(self.weights) > max_weight_norm:
+                self.weights = self.weights * (max_weight_norm / np.linalg.norm(self.weights))
 
 
     def stats(self):

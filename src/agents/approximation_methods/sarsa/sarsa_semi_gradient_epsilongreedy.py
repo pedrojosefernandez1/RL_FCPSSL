@@ -39,7 +39,15 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedy, SarsaSemiGradientAgent)
         """
 
 
-        return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([np.dot(self.weights[a], self.feature_extractor(s)) for a in range(self.nA)]), action_space=self.nA)
+        #return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([np.dot(self.weights[a], self.feature_extractor(s)) for a in range(self.nA)]), action_space=self.nA)
+        #return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([np.dot(self.weights[a], self._normalize(self.feature_extractor(s)))for a in range(self.nA)]), action_space=self.nA)
+    
+        return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([
+            np.dot(self.weights[a], self.feature_extractor(s) / (np.linalg.norm(self.feature_extractor(s)) + 1e-8))
+            for a in range(self.nA)
+        ]), action_space=self.nA)
+
+    
         #return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.dot(self.weights, self.feature_extractor(s)), action_space=self.nA)
 
     def decay(self):
