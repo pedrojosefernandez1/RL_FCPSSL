@@ -32,23 +32,22 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedy, SarsaSemiGradientAgent)
         """
         SarsaSemiGradientAgent.__init__(self, env, seed=seed, gamma=gamma, alpha=alpha, alpha_decay=alpha_decay, min_alpha=min_alpha, feature_extractor=feature_extractor)
         EpsilonGreedy.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
+        self.weights = np.zeros((self.nA, feature_extractor.iht.size))
 
+    def get_Q(self, state):
+        """Calcula los valores Q para cada acción dado un estado."""
+        features = self.feature_extractor(state)
+        Q_values = np.dot(self.weights, features)
+        return Q_values
+    
     def get_action(self, state, info):
         """
         Selecciona una acción usando la política ε-greedy con función de aproximación.
         """
-
-
-        #return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([np.dot(self.weights[a], self.feature_extractor(s)) for a in range(self.nA)]), action_space=self.nA)
-        #return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([np.dot(self.weights[a], self._normalize(self.feature_extractor(s)))for a in range(self.nA)]), action_space=self.nA)
-    
-        return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.array([
-            np.dot(self.weights[a], self.feature_extractor(s) / (np.linalg.norm(self.feature_extractor(s)) + 1e-8))
-            for a in range(self.nA)
-        ]), action_space=self.nA)
-
-    
-        #return EpsilonGreedy.get_action(self, state, info, Q_function=lambda s: np.dot(self.weights, self.feature_extractor(s)), action_space=self.nA)
+        if np.random.rand() < self.epsilon:
+            return self.env.action_space.sample()
+        Q_values = self.get_Q(state)
+        return np.argmax(Q_values)
 
     def decay(self):
         """
