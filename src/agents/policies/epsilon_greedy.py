@@ -80,11 +80,12 @@ class EpsilonGreedy:
         """
         Selecciona una acción usando una política ε-greedy en métodos de aproximación.
         """
-        if np.random.rand() < self.epsilon:
-            return np.random.choice(action_space)  # Exploración aleatoria
         
-        q_values = Q_function(state)
-        return np.argmax(q_values)
+        if np.random.rand() < self.epsilon:
+            return self.env.action_space.sample()
+        
+        Q_values = self.get_Q(state)
+        return np.argmax(Q_values)
     
     def decay(self):
         """

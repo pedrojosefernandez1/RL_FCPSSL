@@ -36,7 +36,7 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             self.feature_extractor = TileCodingFeatureExtractor(num_tilings=num_tilings, low=env.observation_space.low, high=env.observation_space.high, iht_size=iht_size)
         else:
             self.feature_extractor = feature_extractor
-        self.weights = np.zeros((self.nA, iht_size))
+        self.weights = np.zeros((self.nA, self.feature_extractor.iht.size))
 
     def get_action(self, state, info):
         """
@@ -82,7 +82,7 @@ class SarsaSemiGradientAgent(ApproximationAgent):
         
         print(self.alpha, self.epsilon, self.min_alpha, self.min_epsilon, self.alpha_decay, self.epsilon_decay, self.feature_extractor.iht.size, self.feature_extractor.num_tilings)
         for episode in tqdm(range(num_episodes)):
-            state, info = self.env.reset()
+            state, info = self.env.reset(seed=self.seed)
             action = self.get_action(state, info)
             episode_reward = 0
             done = False

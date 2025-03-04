@@ -32,7 +32,7 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedy, SarsaSemiGradientAgent)
         """
         SarsaSemiGradientAgent.__init__(self, env, seed=seed, gamma=gamma, alpha=alpha, alpha_decay=alpha_decay, min_alpha=min_alpha, feature_extractor=feature_extractor)
         EpsilonGreedy.__init__(self, epsilon=epsilon, epsilon_decay=epsilon_decay, min_epsilon=min_epsilon)
-        self.weights = np.zeros((self.nA, feature_extractor.iht.size))
+        #self.weights = np.zeros((self.nA, feature_extractor.iht.size))
 
     def get_Q(self, state):
         """Calcula los valores Q para cada acción dado un estado."""
