@@ -1,3 +1,13 @@
-numpy~=2.2.2
-seaborn~=0.13.2
-matplotlib~=3.10.0
+numpy
+pandas
+matplotlib
+seaborn
+opencv-python
+torch
+imageio
+imageio-ffmpeg
+networkx
+moviepy
+gymnasium
+swig
+Box2D
