@@ -50,7 +50,7 @@ def plot_len_episodes(episodes):
 )
 
   # Añadimos título y etiquetas
-  plt.title('Longirud de episodios por T')
+  plt.title('Longitud de episodios por T')
   plt.xlabel('Episodio T')
   plt.ylabel('Número de pasos del episodio')
 

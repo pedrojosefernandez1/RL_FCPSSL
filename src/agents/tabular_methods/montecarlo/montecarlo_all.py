@@ -43,7 +43,7 @@ class MonteCarloAllAgent(EpisodicAgent):
         """
         super().train(num_episodes, render_interval, video_path)  # Configura video si es necesario
         
-        state, info = self.env.reset()
+        state, info = self.env.reset(seed=self.seed)
         for episode in tqdm(range(num_episodes)):
             done = False
             episode_reward = 0
@@ -60,5 +60,5 @@ class MonteCarloAllAgent(EpisodicAgent):
             self.episode_rewards.append(episode_reward)  # Guarda recompensa acumulada
             self.episodes.append(episode_data)  # Guarda historial del episodio
             self.decay()
-            state, info = self.env.reset()
+            state, info = self.env.reset(seed=self.seed)
             
