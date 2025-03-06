@@ -1,16 +1,51 @@
-# Título del Trabajo
+# Aprendizaje en entornos complejos
 ## Información
 - **Alumnos:** Sendra Lázaro, Ricardo Javier; Pujante Saez, Jaime; Fernández Campillo, Pedro José;
 - **Asignatura:** Extensiones de Machine Learning
 - **Curso:** 2024/2025
 - **Grupo:** FCPSSL
-## Descripción
-En este parte se analizan los algoritmos del bandido de k-brazos, comparando su rendimiento en entornos
-estacionarios. Para ello se implementan varias familias de métodos: E-greedy, UCB, ascenso del gradiente,
-evaluando las recompensas y rechazos acumulados.
-## Estructura
-[Explicación de la organización del repositorio]
-## Instalación y Uso
-[Instrucciones si son necesarias]
+
+## 📖 Descripción
+
+El objetivo del proyecto es analizar y comparar diferentes estrategias de aprendizaje por refuerzo en entornos simulados.  
+
+- **Métodos tabulares**: Se utilizan para resolver problemas de menor dimensión, almacenando valores en tablas de valores de acción.  
+  - Monte Carlo  
+  - SARSA  
+  - Q-Learning  
+
+- **Métodos de aproximación**: Permiten manejar espacios de estado continuos mediante funciones aproximadas.  
+  - SARSA Semigradiente  
+  - Deep Q-Learning (DQN)  
+
+Este trabajo busca entender cómo varía el desempeño de cada método según la complejidad del entorno y la capacidad de generalización del modelo.  
+
+## 📂 Estructura del Proyecto
+
+```
+src/
+│── agents/
+│   ├── approximationmethods/   # Métodos de aproximación de funciones
+│   ├── base/                   # Clases base para los agentes
+│   ├── policies/               # Implementaciones de políticas de exploración/explotación
+│   ├── tabularmethods/         # Métodos tabulares como Monte Carlo, SARSA y Q-Learning
+│── plotting/                   # Funciones para visualización de resultados
+
+Estudios principales:
+├── MetodosAproximados.ipynb    # Análisis detallado de métodos de aproximación (SARSA semigradiente y DQN)
+├── MetodosTabulares.ipynb      # Comparación de métodos tabulares (Monte Carlo, SARSA, Q-Learning)
+├── MonteCarlo.ipynb            # Estudio específico y detallado del método Monte Carlo
+```
+
+Estos notebooks contienen análisis detallados de cada categoría de algoritmos, incluyendo implementación, comparación de rendimiento y observaciones clave sobre su desempeño en distintos entornos.
+
 ## Tecnologías Utilizadas
-[Lista de lenguajes, frameworks, etc.]
+
+- **Python** - Lenguaje principal del proyecto. 
+- **Matplotlib** - Visualización de resultados.  
+- **Gymnasium** - Entorno de simulación para entrenamiento de agentes.
+- **PyTorch** - Implementación de redes neuronales para Deep Q-Learning.
+- **Google Colab** - Para el desarrollo e interacción interactiva.
+
+---
+
