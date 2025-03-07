@@ -21,42 +21,88 @@ import matplotlib.pyplot as plt
 
 # @title Funciones para mostrar los resultados
 
-def plot_episode_rewards(list_stats):
-  # Creamos una lista de índices para el eje x
-  indices = list(range(len(list_stats)))
+import numpy as np
+import matplotlib.pyplot as plt
 
-  # Creamos el gráfico
-  plt.figure(figsize=(6, 3))
-  plt.plot(indices, list_stats)
+def plot_episode_rewards(list_stats, smoothing_window=50):
+    """
+    Genera una gráfica de la evolución de recompensas por episodio con opción de suavización.
+    
+    Args:
+        list_stats (list): Lista de recompensas obtenidas por episodio.
+        smoothing_window (int, opcional): Ventana para suavizar la curva mediante media móvil.
+    """
+    indices = np.arange(len(list_stats))
+    
+    if smoothing_window > 1:
+        smoothed_rewards = np.convolve(list_stats, np.ones(smoothing_window) / smoothing_window, mode='valid')
+        indices = indices[:len(smoothed_rewards)]
+    else:
+        smoothed_rewards = list_stats
 
-  # Añadimos título y etiquetas
-  plt.title('Proporción de recompensas')
-  plt.xlabel('Episodio')
-  plt.ylabel('Proporción')
+    plt.figure(figsize=(8, 4))
+    plt.plot(indices, smoothed_rewards, label="Recompensas por Episodio", color='b')
+    plt.title('Recompensas por Episodio (Suavizado)')
+    plt.xlabel('Episodio')
+    plt.ylabel('Recompensa')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
-  # Mostramos el gráfico
-  plt.grid(True)
-  plt.show()
 
-# Define la función para mostrar el tamaño de los episodios
-# Pon aquí tu código.
+def plot_episode_proporcional_rewards(list_stats, smoothing_window=50):
+    """
+    Muestra la proporción acumulada de recompensas obtenidas a lo largo del entrenamiento.
+    
+    Args:
+        list_stats (list): Lista de recompensas obtenidas.
+        smoothing_window (int, opcional): Ventana de suavización con media móvil.
+    """
+    indices = np.arange(len(list_stats))
+    proporciones = np.cumsum(list_stats) / (indices + 1)
 
-def plot_len_episodes(episodes):
-  # Creamos una lista de índices para el eje x
+    if smoothing_window > 1:
+        smoothed_rewards = np.convolve(proporciones, np.ones(smoothing_window) / smoothing_window, mode='valid')
+        indices = indices[:len(smoothed_rewards)]
+    else:
+        smoothed_rewards = proporciones
 
-  # Creamos el gráfico
-  plt.figure(figsize=(6, 3))
-  plt.plot(    [len(episode) for episode in episodes]
-)
+    plt.figure(figsize=(8, 4))
+    plt.plot(indices, smoothed_rewards, label="Proporción de Recompensas", color='b')
+    plt.title('Proporción Acumulada de Recompensas (Suavizado)')
+    plt.xlabel('Episodio')
+    plt.ylabel('Proporción de éxitos')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
-  # Añadimos título y etiquetas
-  plt.title('Longitud de episodios por T')
-  plt.xlabel('Episodio T')
-  plt.ylabel('Número de pasos del episodio')
 
-  # Mostramos el gráfico
-  plt.grid(True)
-  plt.show()
+def plot_len_episodes(episodes, smoothing_window=50):
+    """
+    Muestra la evolución de la longitud de los episodios con opción de suavización.
+    
+    Args:
+        episodes (list): Lista donde cada elemento representa un episodio.
+        smoothing_window (int, opcional): Ventana de suavización con media móvil.
+    """
+    episode_lengths = [len(episode) for episode in episodes]
+    indices = np.arange(len(episode_lengths))
+
+    if smoothing_window > 1:
+        smoothed_lengths = np.convolve(episode_lengths, np.ones(smoothing_window) / smoothing_window, mode='valid')
+        indices = indices[:len(smoothed_lengths)]
+    else:
+        smoothed_lengths = episode_lengths
+
+    plt.figure(figsize=(8, 4))
+    plt.plot(indices, smoothed_lengths, label="Longitud de Episodio", color='b')
+    plt.title('Longitud de Episodios por T (Suavizado)')
+    plt.xlabel('Episodio T')
+    plt.ylabel('Número de Pasos')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 
 def render_episode(actions_to_take, env, titulo="Camino encontrado", seed=32):
     done = False
