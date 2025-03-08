@@ -27,7 +27,6 @@ class TabularAgent(Agent):
         """
         super().__init__(env,seed= seed, gamma=gamma)
         self.gamma = gamma
-        
         self.Q = np.zeros([env.observation_space.n, self.nA])
         self.episode_rewards = []
         self.episodes = []
