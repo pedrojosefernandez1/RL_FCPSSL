@@ -2,9 +2,14 @@
 Module: plotting/plotting.py
 Description: Contiene funciones para generar gráficas de comparación de algoritmos.
 
-Author: Luis Daniel Hernández Molinero
-Email: ldaniel@um.es
-Date: 2025/01/29
+Author: Jaime Pujante Sáez
+Email: jaime.pujantes@um.es
+
+Author: Ricardo Javier Sendra Lázaro
+Email: ricardojavier.sendral@um.es
+
+Author: Pedro José Fernandez Campillo
+Email: pedrojose.fernandez1@um.es
 
 This software is licensed under the GNU General Public License v3.0 (GPL-3.0),
 with the additional restriction that it may not be used for commercial purposes.

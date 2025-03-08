@@ -16,7 +16,7 @@ El objetivo del proyecto es analizar y comparar diferentes estrategias de aprend
 
 - **Métodos de aproximación**: Permiten manejar espacios de estado continuos mediante funciones aproximadas.  
   - SARSA Semigradiente  
-  - Deep Q-Learning (DQN)  
+  - Deep Q-Learning (DQN)  (No contemplado en los estudios)
 
 Este trabajo busca entender cómo varía el desempeño de cada método según la complejidad del entorno y la capacidad de generalización del modelo.  
 
@@ -27,6 +27,7 @@ src/
 │── agents/
 │   ├── approximationmethods/   # Métodos de aproximación de funciones
 │   ├── base/                   # Clases base para los agentes
+│   ├── docs/                   # Archivos correspondientes con la documentacion
 │   ├── policies/               # Implementaciones de políticas de exploración/explotación
 │   ├── tabularmethods/         # Métodos tabulares como Monte Carlo, SARSA y Q-Learning
 │── plotting/                   # Funciones para visualización de resultados
@@ -34,7 +35,7 @@ src/
 Estudios principales:
 ├── MetodosAproximados.ipynb    # Análisis detallado de métodos de aproximación (SARSA semigradiente y DQN)
 ├── MetodosTabulares.ipynb      # Comparación de métodos tabulares (Monte Carlo, SARSA, Q-Learning)
-├── MonteCarlo.ipynb            # Estudio específico y detallado del método Monte Carlo
+├── GymnasiumMonteCarlo.ipynb   # Estudio específico y detallado del método Monte Carlo
 ```
 
 Estos notebooks contienen análisis detallados de cada categoría de algoritmos, incluyendo implementación, comparación de rendimiento y observaciones clave sobre su desempeño en distintos entornos.
