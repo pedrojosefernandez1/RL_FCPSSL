@@ -60,3 +60,4 @@ class QLearningAgent(TDLearningAgent):
             self.episodes.append(episode_data)  # Guarda historial del episodio
             self.decay()  # Aplicar decay después de cada episodio
             state, info = self.env.reset()
+        self.env.close()

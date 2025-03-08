@@ -61,4 +61,5 @@ class MonteCarloAllAgent(EpisodicAgent):
             self.episodes.append(episode_data)  # Guarda historial del episodio
             self.decay()
             state, info = self.env.reset(seed=self.seed)
+        self.env.close()
             

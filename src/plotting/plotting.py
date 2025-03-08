@@ -24,6 +24,89 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.pyplot as plt
 
+def agrupar_por_media(lista, n):
+    # Convertir la lista en un array de numpy para facilitar operaciones
+    array = np.array(lista)
+
+    # Calcular la cantidad de grupos
+    num_grupos = len(lista) // n
+
+    # Crear la lista de medias usando reshape y mean
+    medias = array[:num_grupos * n].reshape(-1, n).mean(axis=1)
+
+    # Crear la lista para el eje X con saltos de `n`
+    x_values = list(range(n, num_grupos * n + 1, n))
+
+    return medias.tolist(), x_values
+
+def plot_episode_rewards_subplot(list_stats, n_media=None, ax=None):
+  indices = list(range(len(list_stats)))
+  if n_media is not None:
+     list_stats, indices = agrupar_por_media(list_stats, n=n_media)
+
+  if ax is None:
+    # Creamos una lista de índices para el eje x
+    
+    
+    # Creamos el gráfico
+    plt.figure(figsize=(6, 3))
+    plt.plot(indices, list_stats)
+
+    # Añadimos título y etiquetas
+    plt.title('Proporción de recompensas')
+    plt.xlabel('Episodio')
+    plt.ylabel('Proporción')
+
+    # Mostramos el gráfico
+    plt.grid(True)
+    plt.show()
+  else:
+    ax.plot(indices, list_stats)
+
+    # Añadimos título y etiquetas
+    ax.set_title('Proporción de recompensas')
+    ax.set_xlabel('Episodio')
+    ax.set_ylabel('Proporción')
+
+    # Mostramos el gráfico
+    ax.grid(True)
+
+# Define la función para mostrar el tamaño de los episodios
+# Pon aquí tu código.
+
+def plot_len_episodes_subplot(episodes, n_media=None, ax=None):
+  # Creamos una lista de índices para el eje x
+
+  len_episodes = [len(episode) for episode in episodes]
+  indices = range(len(len_episodes))
+  if n_media is not None:
+     len_episodes, indices = agrupar_por_media(len_episodes, n=n_media)
+
+  if ax is None:
+    # Creamos el gráfico
+    plt.figure(figsize=(6, 3))
+    plt.plot(indices, len_episodes)
+
+    # Añadimos título y etiquetas
+    plt.title('Longitud de episodios por T')
+    plt.xlabel('Episodio T')
+    plt.ylabel('Número de pasos del episodio')
+
+    # Mostramos el gráfico
+    plt.grid(True)
+    plt.show()
+  else:
+    ax.plot(indices, len_episodes)
+
+    ax.set_title('Longitud de episodios por T')
+    ax.set_xlabel('Episodio T')
+    ax.set_ylabel('Número de pasos del episodio')
+
+    # Mostramos el gráfico
+    ax.grid(True)
+
+### Refactor
+
 def plot_episode_rewards(list_stats, smoothing_window=50):
     """
     Genera una gráfica de la evolución de recompensas por episodio con opción de suavización.

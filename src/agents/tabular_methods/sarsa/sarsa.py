@@ -64,3 +64,5 @@ class SarsaAgent(TDLearningAgent):
             self.decay()  # Aplicar decay después de cada episodio
             state, info = self.env.reset()
             action = self.get_action(state, info, Q=self.Q, action_space=self.nA)
+
+        self.env.close()
