@@ -13,8 +13,8 @@ For more details about GPL-3.0: https://www.gnu.org/licenses/gpl-3.0.html
 """
 
 # Importación de módulos o clases
-from .plotting import plot_episode_rewards, plot_len_episodes, render_episode, show_images_grid, plot_episode_proporcional_rewards
+from .plotting import plot_episode_rewards, plot_len_episodes, render_episode, show_images_grid, plot_episode_proporcional_rewards, plot_episode_rewards_subplot, plot_len_episodes_subplot
 
 # Lista de módulos o clases públicas
-__all__ = ['plot_episode_rewards', 'plot_len_episodes', 'render_episode', 'show_images_grid','plot_episode_proporcional_rewards']
+__all__ = ['plot_episode_rewards', 'plot_len_episodes', 'render_episode', 'show_images_grid','plot_episode_proporcional_rewards','plot_episode_rewards_subplot', 'plot_len_episodes_subplot']
 

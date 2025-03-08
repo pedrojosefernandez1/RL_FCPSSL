@@ -23,11 +23,11 @@ Este trabajo busca entender cómo varía el desempeño de cada método según la
 ## 📂 Estructura del Proyecto
 
 ```
+docs/                           # Archivos correspondientes con la documentacion
 src/
 │── agents/
 │   ├── approximationmethods/   # Métodos de aproximación de funciones
 │   ├── base/                   # Clases base para los agentes
-│   ├── docs/                   # Archivos correspondientes con la documentacion
 │   ├── policies/               # Implementaciones de políticas de exploración/explotación
 │   ├── tabularmethods/         # Métodos tabulares como Monte Carlo, SARSA y Q-Learning
 │── plotting/                   # Funciones para visualización de resultados
