@@ -60,6 +60,6 @@ class MonteCarloAllAgent(EpisodicAgent):
             self.episode_rewards.append(episode_reward)  # Guarda recompensa acumulada
             self.episodes.append(episode_data)  # Guarda historial del episodio
             self.decay()
-            state, info = self.env.reset(seed=self.seed)
+            state, info = self.env.reset()
         self.env.close()
             

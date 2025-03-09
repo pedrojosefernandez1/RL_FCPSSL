@@ -79,9 +79,10 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             video_path (str, opcional): Directorio donde almacenar videos.
         """
         super().train(num_episodes, render_interval, video_path)  # Configuración de video
-        
+        state, info = self.env.reset(seed=self.seed)
+
         for episode in tqdm(range(num_episodes)):
-            state, info = self.env.reset(seed=self.seed)
+            
             action = self.get_action(state, info)
             episode_reward = 0
             done = False
@@ -98,7 +99,10 @@ class SarsaSemiGradientAgent(ApproximationAgent):
             self.decay()
             self.episode_rewards.append(episode_reward)  # Guarda recompensa acumulada
             self.episodes.append(episode_data)  # Guarda historial del episodio
+            state, info = self.env.reset()
 
+        self.env.close()
+        
     def stats(self):
         stats = super().stats()
         stats = stats | {'weights': self.weights}

@@ -44,7 +44,7 @@ class SarsaAgent(TDLearningAgent):
         """
         super().train(num_episodes, render_interval, video_path)  # Configura video si es necesario
         
-        state, info = self.env.reset()
+        state, info = self.env.reset(seed=self.seed)
         action = self.get_action(state, info, Q=self.Q, action_space=self.nA)
         for episode in tqdm(range(num_episodes)):
             done = False
