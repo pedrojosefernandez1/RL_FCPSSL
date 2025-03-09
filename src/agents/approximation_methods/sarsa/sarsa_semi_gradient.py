@@ -80,7 +80,6 @@ class SarsaSemiGradientAgent(ApproximationAgent):
         """
         super().train(num_episodes, render_interval, video_path)  # Configuración de video
         
-        print(self.alpha, self.epsilon, self.min_alpha, self.min_epsilon, self.alpha_decay, self.epsilon_decay, self.feature_extractor.iht.size, self.feature_extractor.num_tilings)
         for episode in tqdm(range(num_episodes)):
             state, info = self.env.reset(seed=self.seed)
             action = self.get_action(state, info)

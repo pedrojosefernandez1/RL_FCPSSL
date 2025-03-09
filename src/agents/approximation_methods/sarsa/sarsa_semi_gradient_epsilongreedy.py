@@ -16,7 +16,7 @@ class SarsaSemiGradientEpsilonGreedyAgent(EpsilonGreedy, SarsaSemiGradientAgent)
     Agente basado en SARSA Semi-Gradiente con política ε-greedy.
     """
 
-    def __init__(self, env: gym.Env, gamma=0.99, alpha=0.01, epsilon=1.0, epsilon_decay=0.995, alpha_decay=0.995, min_epsilon=0.01, min_alpha=0.01, feature_extractor=None, seed=42):
+    def __init__(self, env: gym.Env, gamma=0.99, alpha=0.01, epsilon=1.0, epsilon_decay=0.995, alpha_decay=0.995, min_epsilon=0.01, min_alpha=0.01, feature_extractor=None, seed=32):
         """
         Inicializa el agente SARSA Semi-Gradiente con política ε-greedy.
         
