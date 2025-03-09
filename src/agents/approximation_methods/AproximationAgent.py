@@ -41,9 +41,7 @@ class ApproximationAgent(Agent):
         Reduce gradualmente `alpha` y lo registra en el historial.
         """
         self.alpha_history.append(self.alpha)
-        self.alpha = self.alpha/2
-        #self.alpha = max(self.alpha/2, self.min_alpha)
-        #self.alpha = max(self.alpha * self.alpha_decay, self.min_alpha)
+        self.alpha = max(self.alpha * self.alpha_decay, self.min_alpha)
 
     def update(self, *args):
         """

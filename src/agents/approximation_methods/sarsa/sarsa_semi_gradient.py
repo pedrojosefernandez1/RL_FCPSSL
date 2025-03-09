@@ -96,9 +96,7 @@ class SarsaSemiGradientAgent(ApproximationAgent):
                 action = next_action
                 episode_data.append((state, action, reward))
                 episode_reward += reward
-            if truncated:
-                self.alpha = self.alpha/2
-                self.epsilon = self.epsilon/2
+            self.decay()
             self.episode_rewards.append(episode_reward)  # Guarda recompensa acumulada
             self.episodes.append(episode_data)  # Guarda historial del episodio
 
