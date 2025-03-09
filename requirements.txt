@@ -9,3 +9,4 @@ networkx==3.4.2
 moviepy==2.1.2
 gymnasium==1.0.0
 swig==4.3.0
+pygame==2.6.1
