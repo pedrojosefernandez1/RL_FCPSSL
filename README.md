@@ -1,5 +1,5 @@
-# Aprendizaje en entornos complejos
-## Información
+# 🤖 Aprendizaje en entornos complejos
+## ℹ️ Información
 - **Alumnos:** Sendra Lázaro, Ricardo Javier; Pujante Saez, Jaime; Fernández Campillo, Pedro José;
 - **Asignatura:** Extensiones de Machine Learning
 - **Curso:** 2024/2025
@@ -40,7 +40,12 @@ Estudios principales:
 
 Estos notebooks contienen análisis detallados de cada categoría de algoritmos, incluyendo implementación, comparación de rendimiento y observaciones clave sobre su desempeño en distintos entornos.
 
-## Tecnologías Utilizadas
+## ▶️ Ejecución
+Para ejecutar los notebooks en Google Colab:
+Dirigirse primero de todo al notebook **`main.ipynb`** donde se podra acceder a cualquier notebook que se encuentra en el repositorio de una manera intercativa. Podria seleccionar **`introduccion.ipynb`** para ver una breve introduccion al problema y enlace a los demas estudios.
+
+
+## 🛠️ Tecnologías Utilizadas
 
 - **Python** - Lenguaje principal del proyecto. 
 - **Matplotlib** - Visualización de resultados.  
